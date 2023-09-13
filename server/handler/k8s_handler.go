@@ -41,17 +41,17 @@ func (h *K8sHandler) ApiRouter(router *gin.RouterGroup) {
 	namespacedRouter := router.Group("/:api-version/namespaces")
 	{
 		// /api/v1/namespaces/{namespace}/pods
-		namespacedRouter.GET("/:namespace-name/:resource-kind")
+		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApiNamespacedList))
 		// /api/v1/namespaces/{namespace}/pods/{{name}}
-		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name")
+		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNamespacedGet))
 	}
 
 	naneNamespacedRouter := router.Group("/:api-version")
 	{
 		// /api/v1/nodes
-		naneNamespacedRouter.GET("/:resource-kind")
+		naneNamespacedRouter.GET("/:resource-kind", middleware.Wrapper(h.ApiNoneNamespacedList))
 		// /api/v1/nodes/{name}
-		naneNamespacedRouter.GET("/:resource-kind/:resource-name")
+		naneNamespacedRouter.GET("/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNoneNamespacedGet))
 	}
 }
 
@@ -66,19 +66,20 @@ func (h *K8sHandler) ApisRouter(router *gin.RouterGroup) {
 	namespacedRouter := router.Group("/:api-group/:api-version/namespaces")
 	{
 		// /apis/apps/v1/namespaces/{namespace}/daemonsets
-		namespacedRouter.GET("/:namespace-name/:resource-kind")
+		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApisNamespacedList))
 		// /apps/v1/namespaces/{namespace}/daemonsets/{{name}}
-		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name")
+		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNamespacedGet))
 	}
 
 	naneNamespacedRouter := router.Group("/:api-group/:api-version")
 	{
-		naneNamespacedRouter.GET("/:resource-kind")
-		naneNamespacedRouter.GET("/:resource-kind/:resource-name")
+		// /batch/v1/jobs
+		naneNamespacedRouter.GET("/:resource-kind", middleware.Wrapper(h.ApisNoneNamespacedList))
+		//naneNamespacedRouter.GET("/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNoneNamespacedGet))
 	}
 }
 
-// InitNaneNamespacedUrl http://localhost:8080/apis/rbac.authorization.k8s.io/v1/clusterroles/test-clusterrole
+// InitNaneNamespacedUrl http://localhost:8080/healthz
 func (h *K8sHandler) InitNaneNamespacedUrl(router *gin.RouterGroup) {
 	router.GET("/healthz", middleware.Wrapper(h.Todo))
 	router.GET("/healthz/:type", middleware.Wrapper(h.Todo))
