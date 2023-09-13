@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	k8sRepo "kill8s/domain/repository/k8s"
 	"kill8s/domain/service"
 	"log"
@@ -21,4 +22,8 @@ func NewK8sApplication(l *log.Logger) *K8sApplication {
 	ka.logger.SetPrefix("K8sApplication:")
 
 	return ka
+}
+
+func (app *K8sApplication) ListNamespaces(ctx context.Context) (resp any, err error) {
+	return app.k8sRepository.ListNamespaces(ctx)
 }

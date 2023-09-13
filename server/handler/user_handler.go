@@ -19,11 +19,17 @@ func (h *UserHandler) Init(router *gin.RouterGroup) {
 	h.application = application.NewUserApplication(h.logger)
 	if router != nil {
 		userGroup := router.Group("/user")
-		userGroup.POST("/", middleware.Wrapper(h.Register))
+		userGroup.POST("/register", middleware.Wrapper(h.RegisterHandler))
+		userGroup.POST("/login", middleware.Wrapper(h.LoginHandler))
 	}
 }
 
-func (h *UserHandler) Register(ctx *gin.Context) (resp any, err error) {
+func (h *UserHandler) RegisterHandler(ctx *gin.Context) (resp any, err error) {
 	userDto := user.RegisterReq{}
-	return h.application.UserRegister(ctx, &userDto)
+	return h.application.Register(ctx, &userDto)
+}
+
+func (h *UserHandler) LoginHandler(ctx *gin.Context) (resp any, err error) {
+	userDto := user.RegisterReq{}
+	return h.application.Login(ctx, &userDto)
 }

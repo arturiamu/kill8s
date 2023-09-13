@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	k8sRepo "kill8s/domain/repository/k8s"
 )
 
@@ -12,4 +13,8 @@ func NewK8sService() *K8sService {
 	return &K8sService{
 		repo: k8sRepo.GetRepository(),
 	}
+}
+
+func (service *K8sService) ListNamespaces(ctx context.Context) (resp any, err error) {
+	return service.repo.ListNamespaces(ctx)
 }

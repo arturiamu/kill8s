@@ -17,8 +17,10 @@ func NewUserService() *UserService {
 	}
 }
 
-func (service *UserService) UserRegister(ctx context.Context, name string, password string) (*entity.User, error) {
-	user := &entity.User{
+func (service *UserService) DoRegister(ctx context.Context, name string, password string) (*entity.User, error) {
+	// domain 中执行具体的业务逻辑，封装完整的数据，供application可直接使用；
+	// 若业务逻辑过于简单（如简单的增删查改），可跳过domain层，在application中直接使用repository进行操作
+	user := entity.User{
 		Username: name,
 		Password: password,
 	}
@@ -27,15 +29,15 @@ func (service *UserService) UserRegister(ctx context.Context, name string, passw
 		return nil, errors.Wrap(err, "md5 password err")
 	}
 
-	err = service.repo.Register(ctx, user)
+	_, err = service.repo.AddUser(user)
 	if err != nil {
 		return nil, errors.Wrap(err, "test repo register err")
 	}
 
-	return user, nil
+	return &user, nil
 }
 
-func (service *UserService) UserLogin(ctx context.Context, name string, password string) (*entity.User, error) {
+func (service *UserService) DoLogin(ctx context.Context, name string, password string) (*entity.User, error) {
 	user := &entity.User{
 		Username: name,
 		Password: password,
@@ -44,11 +46,12 @@ func (service *UserService) UserLogin(ctx context.Context, name string, password
 	if err != nil {
 		return nil, errors.Wrap(err, "md5 password err")
 	}
-
-	err = service.repo.Register(ctx, user)
+	u, err := service.repo.GetUserByName(name)
 	if err != nil {
 		return nil, errors.Wrap(err, "test repo register err")
 	}
-
-	return user, nil
+	if user.Password == password {
+		return &u, nil
+	}
+	return nil, errors.New("err username or password")
 }

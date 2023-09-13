@@ -8,9 +8,6 @@ import (
 func K8s() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		namespaceName := context.Param(constant.K8sNamespaceName)
-		if namespaceName == "" {
-			namespaceName = "default"
-		}
 		context.Set(constant.K8sNamespaceName, namespaceName)
 
 		apiVersion := context.Param(constant.K8sApiVersion)
