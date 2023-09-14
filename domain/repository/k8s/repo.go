@@ -1,28 +1,13 @@
 package k8s
 
+import "context"
+
 var globalRepository Repository
 
-type CoreV1 interface {
-	NamespacesGetter
-	ServicesGetter
-	PodsGetter
-	SecretsGetter
-	PersistentVolumesGetter
-	ReplicationControllersGetter
-	ConfigMapsGetter
-}
-
-type AppsV1 interface {
-	ControllerRevisionsGetter
-	DaemonSetsGetter
-	DeploymentsGetter
-	ReplicaSetsGetter
-	StatefulSetsGetter
-}
-
 type Repository interface {
-	CoreV1() CoreV1
-	AppsV1() AppsV1
+	Getter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)
+	Lister(ctx context.Context, namespace, resource string, opt ...map[string]interface{}) (any, error)
+	Deleter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)
 }
 
 func GetRepository() Repository {

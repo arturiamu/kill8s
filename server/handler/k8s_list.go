@@ -1,12 +1,21 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"errors"
+	"github.com/gin-gonic/gin"
+)
 
 // ApiNamespacedList
 // /api/{api-version}/namespaces/{namespace-name}/{resource-kind}
 // /api/v1/namespaces/{namespace}/pods
 func (h *K8sHandler) ApiNamespacedList(ctx *gin.Context) (res any, err error) {
-	return
+	namespace := h.getNamespaceName(ctx)
+	resource := h.getResourceKind(ctx)
+	name := h.getResourceName(ctx)
+	if namespace == "" || resource == "" || name != "" {
+		return nil, errors.New("the request parameter is incorrect")
+	}
+	return h.application.Lister(ctx, namespace, resource)
 }
 
 // ApiNoneNamespacedList
@@ -14,25 +23,39 @@ func (h *K8sHandler) ApiNamespacedList(ctx *gin.Context) (res any, err error) {
 // /api/v1/namespaces
 // /api/v1/nodes
 func (h *K8sHandler) ApiNoneNamespacedList(ctx *gin.Context) (res any, err error) {
-	kind := h.getResourceKind(ctx)
-	if kind == "namespaces" {
-		return h.application.ListNamespace(ctx)
+	namespace := h.getNamespaceName(ctx)
+	resource := h.getResourceKind(ctx)
+	name := h.getResourceName(ctx)
+	if namespace != "" || resource == "" || name != "" {
+		return nil, errors.New("the request parameter is incorrect")
 	}
-	return
+	return h.application.Lister(ctx, namespace, resource)
 }
 
 // ApisNamespacedList
 // /apis/{api-group}/{api-version}/namespaces/{namespace-name}/{resource-kind}
 // /apis/apps/v1/namespaces/{namespace}/daemonsets
 func (h *K8sHandler) ApisNamespacedList(ctx *gin.Context) (res any, err error) {
-	return
+	namespace := h.getNamespaceName(ctx)
+	resource := h.getResourceKind(ctx)
+	name := h.getResourceName(ctx)
+	if namespace == "" || resource == "" || name != "" {
+		return nil, errors.New("the request parameter is incorrect")
+	}
+	return h.application.Lister(ctx, namespace, resource)
 }
 
 // ApisNoneNamespacedList
 // /apis/{api-group}/{api-version}/{resource-kind}
 // /apis/apps/v1/replicasets
 func (h *K8sHandler) ApisNoneNamespacedList(ctx *gin.Context) (res any, err error) {
-	return
+	namespace := h.getNamespaceName(ctx)
+	resource := h.getResourceKind(ctx)
+	name := h.getResourceName(ctx)
+	if namespace != "" || resource == "" || name != "" {
+		return nil, errors.New("the request parameter is incorrect")
+	}
+	return h.application.Lister(ctx, namespace, resource)
 }
 
 func (h *K8sHandler) NoneNamespacedUrlList(ctx *gin.Context) (res any, err error) {
