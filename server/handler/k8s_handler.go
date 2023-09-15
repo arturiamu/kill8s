@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"kill8s/application"
+	k8sRepo "kill8s/domain/repository/k8s"
 	"kill8s/infrastructure/constant"
 	"kill8s/server/middleware"
 	"log"
@@ -10,13 +11,14 @@ import (
 
 type K8sHandler struct {
 	logger      *log.Logger
-	application *application.K8sApplication
+	application k8sRepo.Repository
 }
 
 // Init router("/api/v1")
 func (h *K8sHandler) Init(router *gin.RouterGroup) {
 	h.logger = log.Default()
-	h.application = application.NewK8sApplication(h.logger)
+	//h.application = application.NewK8sApplication(h.logger)
+	h.application = application.NewK8sApplicationMock(h.logger)
 	//h.logger.SetPrefix("K8sHandler: ")
 
 	if router != nil {
@@ -40,17 +42,32 @@ func (h *K8sHandler) ApiRouter(router *gin.RouterGroup) {
 	namespacedRouter := router.Group("/:api-version/namespaces")
 	{
 		// /api/v1/namespaces/{namespace}/pods
-		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApiNamespacedList))
-		// /api/v1/namespaces/{namespace}/pods/{{name}}
+		namespacedRouter.POST("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApiNamespacedCreate))
+
+		// /api/v1/namespaces/{namespace}/pods/{name}
+		namespacedRouter.DELETE("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNamespacedDelete))
+		namespacedRouter.PATCH("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNamespacedUpdate))
 		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNamespacedGet))
+
+		// /api/v1/namespaces/{namespace}/pods
+		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApiNamespacedList))
 	}
 
 	naneNamespacedRouter := router.Group("/:api-version")
 	{
+		// /api/v1/namespaces
 		// /api/v1/nodes
-		naneNamespacedRouter.GET("/:resource-kind", middleware.Wrapper(h.ApiNoneNamespacedList))
+		naneNamespacedRouter.POST("/:resource-kind", middleware.Wrapper(h.ApiNoneNamespacedCreate))
+
+		// /api/v1/namespaces/{name}
 		// /api/v1/nodes/{name}
+		naneNamespacedRouter.DELETE("/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNoneNamespacedDelete))
+		naneNamespacedRouter.PATCH("/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNoneNamespacedUpdate))
 		naneNamespacedRouter.GET("/:resource-kind/:resource-name", middleware.Wrapper(h.ApiNoneNamespacedGet))
+
+		// /api/v1/nodes
+		// /api/v1/namespaces
+		naneNamespacedRouter.GET("/:resource-kind", middleware.Wrapper(h.ApiNoneNamespacedList))
 	}
 }
 
@@ -64,17 +81,28 @@ func (h *K8sHandler) ApiRouter(router *gin.RouterGroup) {
 func (h *K8sHandler) ApisRouter(router *gin.RouterGroup) {
 	namespacedRouter := router.Group("/:api-group/:api-version/namespaces")
 	{
-		// /apis/apps/v1/namespaces/{namespace}/daemonsets
-		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApisNamespacedList))
-		// /apps/v1/namespaces/{namespace}/daemonsets/{{name}}
+		// /apis/batch/v1/namespaces/{namespace}/jobs
+		namespacedRouter.POST("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApisNamespacedCreate))
+
+		// /apis/batch/v1/namespaces/{namespace}/jobs/{name}
+		namespacedRouter.DELETE("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNamespacedDelete))
+		namespacedRouter.PATCH("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNamespacedUpdate))
 		namespacedRouter.GET("/:namespace-name/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNamespacedGet))
+
+		// /apis/batch/v1/namespaces/{namespace}/jobs
+		namespacedRouter.GET("/:namespace-name/:resource-kind", middleware.Wrapper(h.ApisNamespacedList))
 	}
 
 	naneNamespacedRouter := router.Group("/:api-group/:api-version")
 	{
+		//naneNamespacedRouter.POST("/:resource-kind", middleware.Wrapper(h.ApisNoneNamespacedCreate))
+
+		// /apis/batch/v1/jobs
+		//naneNamespacedRouter.DELETE("/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNoneNamespacedDelete))
+		//naneNamespacedRouter.PATCH("/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNoneNamespacedUpdate))
+		//naneNamespacedRouter.GET("/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNoneNamespacedList))
 		// /batch/v1/jobs
 		naneNamespacedRouter.GET("/:resource-kind", middleware.Wrapper(h.ApisNoneNamespacedList))
-		//naneNamespacedRouter.GET("/:resource-kind/:resource-name", middleware.Wrapper(h.ApisNoneNamespacedGet))
 	}
 }
 

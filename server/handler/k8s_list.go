@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,10 +11,7 @@ func (h *K8sHandler) ApiNamespacedList(ctx *gin.Context) (res any, err error) {
 	h.logger.Println("K8sHandler.ApiNamespacedList")
 	namespace := h.getNamespaceName(ctx)
 	resource := h.getResourceKind(ctx)
-	name := h.getResourceName(ctx)
-	if namespace == "" || resource == "" || name != "" {
-		return nil, errors.New("the request parameter is incorrect")
-	}
+	//name := h.getResourceName(ctx)
 	return h.application.Lister(ctx, namespace, resource)
 }
 
@@ -27,10 +23,7 @@ func (h *K8sHandler) ApiNoneNamespacedList(ctx *gin.Context) (res any, err error
 	h.logger.Println("K8sHandler.ApiNoneNamespacedList")
 	namespace := h.getNamespaceName(ctx)
 	resource := h.getResourceKind(ctx)
-	name := h.getResourceName(ctx)
-	if namespace != "" || resource == "" || name != "" {
-		return nil, errors.New("the request parameter is incorrect")
-	}
+	//name := h.getResourceName(ctx)
 	return h.application.Lister(ctx, namespace, resource)
 }
 
@@ -41,10 +34,7 @@ func (h *K8sHandler) ApisNamespacedList(ctx *gin.Context) (res any, err error) {
 	h.logger.Println("K8sHandler.ApisNamespacedList")
 	namespace := h.getNamespaceName(ctx)
 	resource := h.getResourceKind(ctx)
-	name := h.getResourceName(ctx)
-	if namespace == "" || resource == "" || name != "" {
-		return nil, errors.New("the request parameter is incorrect")
-	}
+	//name := h.getResourceName(ctx)
 	return h.application.Lister(ctx, namespace, resource)
 }
 
@@ -55,13 +45,14 @@ func (h *K8sHandler) ApisNoneNamespacedList(ctx *gin.Context) (res any, err erro
 	h.logger.Println("K8sHandler.ApisNoneNamespacedList")
 	namespace := h.getNamespaceName(ctx)
 	resource := h.getResourceKind(ctx)
-	name := h.getResourceName(ctx)
-	if namespace != "" || resource == "" || name != "" {
-		return nil, errors.New("the request parameter is incorrect")
-	}
+	//name := h.getResourceName(ctx)
 	return h.application.Lister(ctx, namespace, resource)
 }
 
 func (h *K8sHandler) NoneNamespacedUrlList(ctx *gin.Context) (res any, err error) {
-	return
+	h.logger.Println("K8sHandler.NoneNamespacedUrlList")
+	namespace := h.getNamespaceName(ctx)
+	resource := h.getResourceKind(ctx)
+	//name := h.getResourceName(ctx)
+	return h.application.Lister(ctx, namespace, resource)
 }

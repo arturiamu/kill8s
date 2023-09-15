@@ -26,6 +26,22 @@ func NewK8sApplication(l *log.Logger) *K8sApplication {
 	return ka
 }
 
+func (k *K8sApplication) Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+	res, err := k.k8sRepository.Creater(ctx, namespace, resource, name)
+	if err != nil {
+		k.logger.Println("Creater err:", err)
+	}
+	return res, err
+}
+
+func (k *K8sApplication) Updater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+	res, err := k.k8sRepository.Updater(ctx, namespace, resource, name)
+	if err != nil {
+		k.logger.Println("Updater err:", err)
+	}
+	return res, err
+}
+
 func (k *K8sApplication) Getter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
 	res, err := k.k8sRepository.Getter(ctx, namespace, resource, name)
 	if err != nil {

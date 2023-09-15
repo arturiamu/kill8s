@@ -20,6 +20,16 @@ func NewRepoClientGo() RepoClientGo {
 	}
 }
 
+func (c RepoClientGo) Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c RepoClientGo) Updater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (c RepoClientGo) Getter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
 	var (
 		result runtime.Object
@@ -30,7 +40,7 @@ func (c RepoClientGo) Getter(ctx context.Context, namespace, resource, name stri
 		err = errors.New("unsupported resource type")
 		return nil, err
 	}
-	if !res.ActionCheck(constant.K8sSupportedResourcesActionGet) {
+	if !res.ActionCheck(constant.ActionGet) {
 		err = errors.New("unsupported resource action")
 		return nil, err
 	}
@@ -53,7 +63,7 @@ func (c RepoClientGo) Lister(ctx context.Context, namespace, resource string, op
 		err = errors.New("unsupported resource type")
 		return nil, err
 	}
-	if !res.ActionCheck(constant.K8sSupportedResourcesActionList) {
+	if !res.ActionCheck(constant.ActionList) {
 		err = errors.New("unsupported resource action")
 		return nil, err
 	}
@@ -71,7 +81,7 @@ func (c RepoClientGo) Deleter(ctx context.Context, namespace, resource, name str
 		err = errors.New("unsupported resource type")
 		return nil, err
 	}
-	if !res.ActionCheck(constant.K8sSupportedResourcesActionList) {
+	if !res.ActionCheck(constant.ActionDelete) {
 		err = errors.New("unsupported resource action")
 		return nil, err
 	}
