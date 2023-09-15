@@ -1,6 +1,6 @@
 # kill8s: Lightweight k8s resource management platform
 
-[中文文档](./README.ZH.md)
+[中文文档](https://github.com/arturiamu/kill8s/blob/main/README.ZH.md)
 
 # Introduction
 

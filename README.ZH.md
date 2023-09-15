@@ -1,7 +1,7 @@
 # kill8s: 轻量的k8s资源管理平台
 
 
-[English document](./README.md)
+[English document](https://github.com/arturiamu/kill8s/blob/main/README.md)
 
 # 介绍
 
