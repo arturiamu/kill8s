@@ -21,7 +21,7 @@ func NewUserApplication(l *log.Logger) *UserApplication {
 		userRepository: userRepo.GetRepository(),
 		userService:    service.NewUserService(),
 	}
-	ua.logger.SetPrefix("UserApplication:")
+	//ua.logger.SetPrefix("UserApplication:")
 	return ua
 }
 

@@ -35,7 +35,11 @@ func (c RepoClientGo) Getter(ctx context.Context, namespace, resource, name stri
 		return nil, err
 	}
 	result = constant.GetRuntimeObj(resource)
-	err = c.Client.RESTClient.Get().Namespace(namespace).Resource(resource).Name(name).Do(ctx).Into(result)
+	if namespace == "" {
+		err = c.Client.RESTClient.Get().Resource(resource).Name(name).Do(ctx).Into(result)
+	} else {
+		err = c.Client.RESTClient.Get().Namespace(namespace).Resource(resource).Name(name).Do(ctx).Into(result)
+	}
 	return result, err
 }
 

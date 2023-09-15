@@ -41,6 +41,7 @@ type SupportedResources string
 
 const (
 	SupportedResourcesPods                   SupportedResources = "pods"
+	SupportedResourcesNodes                  SupportedResources = "nodes"
 	SupportedResourcesSecrets                SupportedResources = "secrets"
 	SupportedResourcesNamespaces             SupportedResources = "namespaces"
 	SupportedResourcesServices               SupportedResources = "services"
@@ -124,6 +125,10 @@ var supportedResourcesActionMap = map[SupportedResources]map[SupportedResourcesA
 		K8sSupportedResourcesActionGet:    struct{}{},
 		K8sSupportedResourcesActionList:   struct{}{},
 	},
+	SupportedResourcesNodes: {
+		K8sSupportedResourcesActionGet:  struct{}{},
+		K8sSupportedResourcesActionList: struct{}{},
+	},
 }
 
 func NewSupportedResources(str string) SupportedResources {
@@ -165,6 +170,9 @@ func GetRuntimeObj(resource string) (obj runtime.Object) {
 		return &corev1.ReplicationController{}
 	case SupportedResourcesConfigMaps:
 		return &corev1.ConfigMap{}
+	case SupportedResourcesNodes:
+		return &corev1.Node{}
+
 	case SupportedResourcesControllerRevisions:
 		return &appsv1.ControllerRevision{}
 	case SupportedResourcesDaemonSets:
@@ -197,6 +205,9 @@ func ListRuntimeObj(resource string) (obj runtime.Object) {
 		return &corev1.ReplicationControllerList{}
 	case SupportedResourcesConfigMaps:
 		return &corev1.ConfigMapList{}
+	case SupportedResourcesNodes:
+		return &corev1.NodeList{}
+
 	case SupportedResourcesControllerRevisions:
 		return &appsv1.ControllerRevisionList{}
 	case SupportedResourcesDaemonSets:

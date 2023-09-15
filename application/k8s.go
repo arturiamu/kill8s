@@ -21,7 +21,7 @@ func NewK8sApplication(l *log.Logger) *K8sApplication {
 		k8sRepository: k8sRepo.GetRepository(),
 		k8sService:    service.NewK8sService(),
 	}
-	ka.logger.SetPrefix("K8sApplication:")
+	//ka.logger.SetPrefix("K8sApplication:")
 
 	return ka
 }

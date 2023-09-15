@@ -15,7 +15,7 @@ type UserHandler struct {
 
 func (h *UserHandler) Init(router *gin.RouterGroup) {
 	h.logger = log.Default()
-	h.logger.SetPrefix("UserHandler: ")
+	//h.logger.SetPrefix("UserHandler: ")
 	h.application = application.NewUserApplication(h.logger)
 	if router != nil {
 		userGroup := router.Group("/user")

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -21,6 +22,7 @@ func NewRouter() (router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	// init handlers
 	initHandlers(v1)
+	router.NoRoute(noRouter)
 	return router
 }
 
@@ -40,4 +42,9 @@ func initHandlers(router *gin.RouterGroup) {
 	for _, hdl := range handlers {
 		hdl.Init(router)
 	}
+}
+
+func noRouter(ctx *gin.Context) {
+	fmt.Println(1)
+	fmt.Println(ctx.FullPath())
 }

@@ -17,7 +17,7 @@ type K8sHandler struct {
 func (h *K8sHandler) Init(router *gin.RouterGroup) {
 	h.logger = log.Default()
 	h.application = application.NewK8sApplication(h.logger)
-	h.logger.SetPrefix("K8sHandler: ")
+	//h.logger.SetPrefix("K8sHandler: ")
 
 	if router != nil {
 		k8sRouter := router.Group("/k8s", middleware.K8s())
@@ -32,7 +32,6 @@ func (h *K8sHandler) Init(router *gin.RouterGroup) {
 // ApiRouter /api
 // /v1/namespaces/{namespace}/pods
 // /v1/namespaces/{namespace}/pods/{{name}}
-// /v1/namespaces/{namespace}/events
 // /v1/namespaces/{namespace}/events
 // /v1/events
 // /v1/nodes
