@@ -5,7 +5,7 @@ import "context"
 var globalRepository Repository
 
 type Repository interface {
-	Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)
+	Creater(ctx context.Context, namespace, resource string, opt ...map[string]interface{}) (any, error)
 	Deleter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)
 	Updater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)
 	Getter(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error)

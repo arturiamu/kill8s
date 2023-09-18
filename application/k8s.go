@@ -26,8 +26,8 @@ func NewK8sApplication(l *log.Logger) *K8sApplication {
 	return ka
 }
 
-func (k *K8sApplication) Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
-	res, err := k.k8sRepository.Creater(ctx, namespace, resource, name)
+func (k *K8sApplication) Creater(ctx context.Context, namespace, resource string, opt ...map[string]interface{}) (any, error) {
+	res, err := k.k8sRepository.Creater(ctx, namespace, resource)
 	if err != nil {
 		k.logger.Println("Creater err:", err)
 	}

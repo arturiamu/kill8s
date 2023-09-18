@@ -1,6 +1,7 @@
 package constant
 
 import (
+	"errors"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -164,6 +165,17 @@ func (s SupportedResources) ActionCheck(act SupportedResourcesAction) bool {
 	}
 	_, okk := actions[act]
 	return okk
+}
+
+func Check(str string, act SupportedResourcesAction) error {
+	res := NewSupportedResources(str)
+	if ok := res.ResourceCheck(); !ok {
+		return errors.New("unsupported resource type")
+	}
+	if ok := res.ActionCheck(act); !ok {
+		return errors.New("unsupported resource action")
+	}
+	return nil
 }
 
 func GetRuntimeObj(resource string) (obj runtime.Object) {

@@ -26,9 +26,9 @@ type mockResp struct {
 	Op        string `json:"op"`
 }
 
-func (k K8sApplicationMock) Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+func (k K8sApplicationMock) Creater(ctx context.Context, namespace, resource string, opt ...map[string]interface{}) (any, error) {
 	return mockResp{
-		Name:      name,
+		Name:      "",
 		Namespace: namespace,
 		Resource:  resource,
 		Op:        "create",

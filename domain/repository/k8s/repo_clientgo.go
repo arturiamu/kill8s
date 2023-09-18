@@ -2,7 +2,6 @@ package k8s
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"kill8s/infrastructure/constant"
 	"kill8s/infrastructure/kube"
@@ -20,7 +19,7 @@ func NewRepoClientGo() RepoClientGo {
 	}
 }
 
-func (c RepoClientGo) Creater(ctx context.Context, namespace, resource, name string, opt ...map[string]interface{}) (any, error) {
+func (c RepoClientGo) Creater(ctx context.Context, namespace, resource string, opt ...map[string]interface{}) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -35,13 +34,7 @@ func (c RepoClientGo) Getter(ctx context.Context, namespace, resource, name stri
 		result runtime.Object
 		err    error
 	)
-	res := constant.NewSupportedResources(resource)
-	if !res.ResourceCheck() {
-		err = errors.New("unsupported resource type")
-		return nil, err
-	}
-	if !res.ActionCheck(constant.ActionGet) {
-		err = errors.New("unsupported resource action")
+	if err := constant.Check(resource, constant.ActionGet); err != nil {
 		return nil, err
 	}
 	result = constant.GetRuntimeObj(resource)
@@ -58,16 +51,15 @@ func (c RepoClientGo) Lister(ctx context.Context, namespace, resource string, op
 		result runtime.Object
 		err    error
 	)
-	res := constant.NewSupportedResources(resource)
-	if !res.ResourceCheck() {
-		err = errors.New("unsupported resource type")
-		return nil, err
-	}
-	if !res.ActionCheck(constant.ActionList) {
-		err = errors.New("unsupported resource action")
+	if err := constant.Check(resource, constant.ActionGet); err != nil {
 		return nil, err
 	}
 	result = constant.ListRuntimeObj(resource)
+	if namespace == "" {
+		err = c.Client.RESTClient.Get().Resource(resource).Do(ctx).Into(result)
+	} else {
+		err = c.Client.RESTClient.Get().Namespace(namespace).Resource(resource).Do(ctx).Into(result)
+	}
 	err = c.Client.RESTClient.Get().Namespace(namespace).Resource(resource).Do(ctx).Into(result)
 	return result, err
 }
@@ -76,15 +68,13 @@ func (c RepoClientGo) Deleter(ctx context.Context, namespace, resource, name str
 	var (
 		err error
 	)
-	res := constant.NewSupportedResources(resource)
-	if !res.ResourceCheck() {
-		err = errors.New("unsupported resource type")
+	if err := constant.Check(resource, constant.ActionGet); err != nil {
 		return nil, err
 	}
-	if !res.ActionCheck(constant.ActionDelete) {
-		err = errors.New("unsupported resource action")
-		return nil, err
+	if namespace == "" {
+		err = c.Client.RESTClient.Delete().Resource(resource).Name(name).Do(ctx).Error()
+	} else {
+		err = c.Client.RESTClient.Delete().Namespace(namespace).Resource(resource).Name(name).Do(ctx).Error()
 	}
-	err = c.Client.RESTClient.Get().Namespace(namespace).Resource(resource).Do(ctx).Error()
 	return nil, err
 }
